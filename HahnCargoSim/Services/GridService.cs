@@ -30,11 +30,115 @@ namespace HahnCargoSim.Services
     {
       return gridJson;
     }
+    public List<int>? FindRoute(int startNodeId, int targetNodeId)
+    {
+      var visited = new HashSet<int>();
+      var route = new List<int>();
+
+      if (DFS(startNodeId, targetNodeId, visited, route))
+          return route;
+      else
+          return null;
+    }
+
+    private bool DFS(int currentNodeId, int targetNodeId, HashSet<int> visited, List<int> route)
+    {
+    
+      visited.Add(currentNodeId);
+      route.Add(currentNodeId);
+
+      if (currentNodeId == targetNodeId)
+          return true;
+
+      foreach (var connection in grid.Connections)
+      {
+          if (connection.FirstNodeId == currentNodeId && !visited.Contains(connection.SecondNodeId))
+          {
+              if (DFS(connection.SecondNodeId, targetNodeId, visited, route))
+                  return true;
+          }
+          else if (connection.SecondNodeId == currentNodeId && !visited.Contains(connection.FirstNodeId))
+          {
+              if (DFS(connection.FirstNodeId, targetNodeId, visited, route))
+                  return true;
+          }
+      }
+
+      route.Remove(currentNodeId);
+      return false;
+    }
+    /*public int? ConnectionAvailable(int sourceNodeId, int targetNodeId)
+    {
+      return (from connection in grid.Connections where (connection!.FirstNodeId == sourceNodeId && connection.SecondNodeId == targetNodeId) || (connection.FirstNodeId == targetNodeId && connection.SecondNodeId == sourceNodeId) select connection.Id).FirstOrDefault();
+    }*/
+    public List<int>? FindOptimalRoute(int startNodeId, int targetNodeId)
+    {
+      var distances = new Dictionary<int, int>(); 
+      var previousNodes = new Dictionary<int, int>();
+      var queue = new HashSet<int>(); 
+
+      
+      foreach (var node in grid.Nodes)
+      {
+          distances[node.Id] = int.MaxValue;
+          previousNodes[node.Id] = -1; 
+          queue.Add(node.Id);
+      }
+      distances[startNodeId] = 0;
+
+      while (queue.Count > 0)
+      {
+          //Select the node with the minimum distance
+          var currentNodeId = queue.OrderBy(nodeId => distances[nodeId]).First();
+          queue.Remove(currentNodeId);
+
+          //If we reach the destination node, build and return the optimal route
+          if (currentNodeId == targetNodeId)
+          {
+              var optimalRoute = new List<int>();
+              var node = targetNodeId;
+              while (node != -1)
+              {
+                  optimalRoute.Add(node);
+                  node = previousNodes[node];
+              }
+              optimalRoute.Reverse();
+              return optimalRoute;
+          }
+
+          //Update distances and previous nodes for neighboring nodes of the current node
+          foreach (var connection in grid.Connections)
+          {
+              if (connection.FirstNodeId == currentNodeId || connection.SecondNodeId == currentNodeId)
+              {
+                  var neighborNodeId = connection.FirstNodeId == currentNodeId ? connection.SecondNodeId : connection.FirstNodeId;
+                  var distanceToNeighbor = distances[currentNodeId] + GetConnectionCost(connection.Id);
+                  if (distanceToNeighbor < distances[neighborNodeId])
+                  {
+                      distances[neighborNodeId] = distanceToNeighbor;
+                      previousNodes[neighborNodeId] = currentNodeId;
+                  }
+              }
+          }
+      }
+
+      return null;
+    }
 
     public int? ConnectionAvailable(int sourceNodeId, int targetNodeId)
     {
-      return (from connection in grid.Connections where (connection!.FirstNodeId == sourceNodeId && connection.SecondNodeId == targetNodeId) || (connection.FirstNodeId == targetNodeId && connection.SecondNodeId == sourceNodeId) select connection.Id).FirstOrDefault();
+        foreach (var connection in grid.Connections)
+        {
+            if ((connection.FirstNodeId == sourceNodeId && connection.SecondNodeId == targetNodeId) ||
+                (connection.FirstNodeId == targetNodeId && connection.SecondNodeId == sourceNodeId))
+            {
+                return connection.Id;
+            }
+        }
+        
+        return null;
     }
+
 
     public int GetConnectionCost(int connectionId)
     {

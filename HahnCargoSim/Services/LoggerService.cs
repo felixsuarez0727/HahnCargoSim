@@ -1,6 +1,7 @@
 ﻿using HahnCargoSim.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using File = System.IO.File;
+using System.Threading;
 
 namespace HahnCargoSim.Services
 {
@@ -9,6 +10,9 @@ namespace HahnCargoSim.Services
     static readonly object locker = new object();
     public async void Log(string message)
     {
+      // Imprimir el mensaje en la consola
+      Console.WriteLine($"{DateTime.UtcNow.ToLongTimeString()}: {message}");
+
       var count = 0;
       do
       {

@@ -6,6 +6,8 @@ namespace HahnCargoSim.Services.Interfaces
   {
     Grid GetGrid();
     string GetGridAsJson();
+    List<int>? FindRoute(int startNodeId, int targetNodeId);
+    List<int>? FindOptimalRoute(int startNodeId, int targetNodeId);
     int? ConnectionAvailable(int SourceNodeId, int TragetNodeId);
     int GetConnectionCost(int connectionId);
     TimeSpan GetConnectionTime(int connectionId);

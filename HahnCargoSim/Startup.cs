@@ -97,8 +97,6 @@ namespace HahnCargoSim
 
       app.UseHttpsRedirection();
       app.UseRouting();
-      app.UseAuthentication();
-      app.UseAuthorization();
       app.UseCors(builder =>
       {
         builder
@@ -106,6 +104,9 @@ namespace HahnCargoSim
           .AllowAnyMethod()
           .AllowAnyHeader();
       });
+      app.UseAuthentication();
+      app.UseAuthorization();
+
 
       
       app.UseEndpoints(endpoints =>

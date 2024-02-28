@@ -1,0 +1,113 @@
+{
+    "Nodes": [
+        {
+            "Id": 0,
+            "Name": "OT9-3U"
+        },
+        {
+            "Id": 1,
+            "Name": "0P-6S2"
+        },
+        {
+            "Id": 2,
+            "Name": "4T-9Y2"
+        },
+        {
+            "Id": 3,
+            "Name": "G-2CW8"
+        },
+        {
+            "Id": 4,
+            "Name": "T5-YC0"
+        },
+        {
+            "Id": 5,
+            "Name": "XEU-I2"
+        }
+    ],
+    "Edges": [
+        {
+            "Id": 0,
+            "Cost": 1,
+            "Time": "00:00:24"
+        },
+        {
+            "Id": 1,
+            "Cost": 5,
+            "Time": "00:00:44"
+        },
+        {
+            "Id": 2,
+            "Cost": 1,
+            "Time": "00:00:10"
+        }
+    ],
+    "Connections": [
+        {
+            "Id": 0,
+            "EdgeId": 1,
+            "FirstNodeId": 0,
+            "SecondNodeId": 2
+        },
+        {
+            "Id": 1,
+            "EdgeId": 1,
+            "FirstNodeId": 0,
+            "SecondNodeId": 4
+        },
+        {
+            "Id": 2,
+            "EdgeId": 0,
+            "FirstNodeId": 1,
+            "SecondNodeId": 2
+        },
+        {
+            "Id": 3,
+            "EdgeId": 2,
+            "FirstNodeId": 1,
+            "SecondNodeId": 4
+        },
+        {
+            "Id": 4,
+            "EdgeId": 2,
+            "FirstNodeId": 2,
+            "SecondNodeId": 5
+        },
+        {
+            "Id": 5,
+            "EdgeId": 1,
+            "FirstNodeId": 2,
+            "SecondNodeId": 4
+        },
+        {
+            "Id": 6,
+            "EdgeId": 2,
+            "FirstNodeId": 3,
+            "SecondNodeId": 2
+        },
+        {
+            "Id": 7,
+            "EdgeId": 0,
+            "FirstNodeId": 3,
+            "SecondNodeId": 4
+        },
+        {
+            "Id": 8,
+            "EdgeId": 1,
+            "FirstNodeId": 4,
+            "SecondNodeId": 5
+        },
+        {
+            "Id": 9,
+            "EdgeId": 1,
+            "FirstNodeId": 5,
+            "SecondNodeId": 1
+        },
+        {
+            "Id": 10,
+            "EdgeId": 2,
+            "FirstNodeId": 5,
+            "SecondNodeId": 0
+        }
+    ]
+}

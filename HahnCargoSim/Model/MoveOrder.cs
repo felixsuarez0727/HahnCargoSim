@@ -9,5 +9,6 @@
     public TimeSpan TravelTime { get; set; }
     public TimeSpan AlreadyTraveled { get; set; }
     public bool Done { get; set; }
+    public List<int> Route { get; set; }
   }
 }

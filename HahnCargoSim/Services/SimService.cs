@@ -66,11 +66,26 @@ namespace HahnCargoSim.Services
     {
       //Valid Check - Base Data
       var transporter = transporterService.Get(moveOrder.CargoTransporterId, moveOrder.Owner);
-
+      
       var startNode = transporter?.Position;
+      loggerService.Log($"startNode:  {startNode.Id}");
       if (startNode == null) return false;
 
-      var connectionId = gridService.ConnectionAvailable(startNode.Id, moveOrder.TargetNodeId);
+      List<int>? optimalRoute = gridService.FindOptimalRoute(startNode.Id, moveOrder.TargetNodeId);
+
+      var nextMoveNodeId = 0;
+      if (optimalRoute != null && optimalRoute.Count >= 2){
+        loggerService.Log("Optimal route found:" + string.Join(" -> ", optimalRoute));
+        nextMoveNodeId = optimalRoute[1];
+        
+      }
+      else{
+        loggerService.Log("No optimal route was found between the specified nodes.");
+      }
+          
+
+      var connectionId = gridService.ConnectionAvailable(startNode.Id, nextMoveNodeId);
+      loggerService.Log($"connectionId:  {connectionId}");
       if (connectionId == null) return false;
 
       var travelCost = gridService.GetConnectionCost((int)connectionId);
@@ -83,11 +98,12 @@ namespace HahnCargoSim.Services
       userService.UpdateCoinAmount(moveOrder.Owner, travelCost * -1);
       moveOrder.TravelTime = gridService.GetConnectionTime((int)connectionId);
       moveOrder.AlreadyTraveled = new TimeSpan(0, 0, 0, 0);
+      moveOrder.Route = optimalRoute;
       moveOrder.Done = false;
 
       MoveOrderQueue.Add(moveOrder);
 
-      loggerService.Log($"Move Started: {moveOrder.Owner} payed {travelCost} Coins to move transporter {moveOrder.CargoTransporterId} from {startNode.Id} to {moveOrder.TargetNodeId}.");
+      loggerService.Log($"Move Started: {moveOrder.Owner} payed {travelCost} Coins to move transporter {moveOrder.CargoTransporterId} from {startNode.Id} to {nextMoveNodeId}.");
 
       //Update Transporter
       transporterService.PutTransporterIntoMove(moveOrder.CargoTransporterId, moveOrder.Owner);
@@ -184,7 +200,12 @@ namespace HahnCargoSim.Services
         transporterService.PutTransporterIntoPosition(moveOrder.CargoTransporterId, moveOrder.Owner, moveOrder.TargetNodeId);
         moveOrder.Done = true;
 
-        loggerService.Log($"Move Done: {moveOrder.Owner} moved transporter {moveOrder.CargoTransporterId} to {moveOrder.TargetNodeId}.");
+        
+        loggerService.Log($"Move Done: {moveOrder.Owner} moved transporter {moveOrder.CargoTransporterId} to {moveOrder.Route[1]}.");
+        
+        if (moveOrder.Route != null && moveOrder.Route.Count >= 2)
+          moveOrder.Route.RemoveAt(1);
+
 
       }
     }

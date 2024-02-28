@@ -37,7 +37,7 @@ namespace HahnCargoSim.Services
     {
       if (!cargoTransporters.ContainsKey(owner))
       {
-        loggerService.Log($"{owner} got the starter cargo transporter");
+        loggerService.Log($"{owner} got the starter cargo transporter in initial Position {positionNodeId}");
         return Create(owner); 
       }
 
